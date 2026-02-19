@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Search App</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        input {
+            padding: 10px;
+            width: 250px;
+        }
+
+        button {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .movie-card {
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            width: 350px;
+            display: inline-block;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        img {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎬 Movie Search App</h2>
+    <input type="text" id="movieInput" placeholder="Enter movie name">
+    <button onclick="searchMovie()">Search</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    const apiKey = "d6286bac";
+
+    function searchMovie() {
+        const movieName = document.getElementById("movieInput").value;
+
+        if(movieName === "") {
+            alert("Please enter a movie name");
+            return;
+        }
+
+        fetch(`https://www.omdbapi.com/?apikey=${apiKey}&t=${movieName}`)
+        .then(response => response.json())
+        .then(data => {
+
+            if(data.Response === "False") {
+                document.getElementById("result").innerHTML = "Movie not found!";
+                return;
+            }
+
+            document.getElementById("result").innerHTML = `
+                <div class="movie-card">
+                    <h3>${data.Title}</h3>
+                    <img src="${data.Poster}">
+                    <p><strong>Year:</strong> ${data.Year}</p>
+                    <p><strong>Genre:</strong> ${data.Genre}</p>
+                    <p><strong>IMDB Rating:</strong> ${data.imdbRating}</p>
+                    <p>${data.Plot}</p>
+                </div>
+            `;
+        })
+        .catch(error => {
+            document.getElementById("result").innerHTML = "Error fetching data!";
+        });
+    }
+</script>
+
+</body>
+</html>
